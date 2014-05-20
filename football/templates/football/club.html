@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>足球信息管理系统</title>
+		<link href="{% get_static_prefix %}football/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/docs.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/datetimepicker.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/font-awesome.min.css" rel="stylesheet" media="screen" />
+		<script src="{% get_static_prefix %}football/js/jquery-1.10.2.min.js" type="text/javascript">
+		</script>
+		<script src="{% get_static_prefix %}football/js/bootstrap.min.js" type="text/javascript">
+		</script>
+		<script src="{% get_static_prefix %}football/js/bootstrap-datetimepicker.min.js">
+		</script>
+		<script src="{% get_static_prefix %}football/js/bootstrap-datetimepicker.zh-CN.js">
+		</script>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#id_birthday').datetimepicker({
+					language:  'zh-CN',
+					format: 'yyyy-mm-dd',
+					weekStart: 7,
+					todayBtn:  0,
+					autoclose: 1,
+					todayHighlight: 1,
+					startView: 2,
+					forceParse: 0,
+					showMeridian: 1,
+					minView: 2
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="brand" href="javascript:void(0)">足球信息管理系统</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav">
+							<li class="">
+							<a href="/football" id="link-questions">主页</a>
+							</li>
+							<li class="">
+							<a href="/football/player" id="link-hiThere">球员信息</a>
+							</li>
+							<li class="">
+							<a href="/football/coach" id="link-popups">教练信息</a>
+							</li>
+							<li class="active">
+							<a href="/football/club" id="link-function">球队信息</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<header>
+			<div class="container">
+			</div>
+		</header>
+		<div class="container">
+		<div class="row tabbable">
+			<div class="span3 bs-docs-sidebar">
+				<ul class="nav nav-list bs-docs-sidenav">
+					<li class="active"><a href="#create" data-toggle="tab"><i class="icon-chevron-right"></i>加入新的俱乐部</a></li>
+					<li><a href="#party" data-toggle="tab" id="show_club_result"><i class="icon-chevron-right"></i>查询俱乐部信息</a></li>
+				</ul>
+			</div>
+			<div class="span9">
+				<div class="tab-content">
+					<div class="tab-pane active" id="create">
+						<div class="page-header">
+							<h1>加入俱乐部球员</h1>
+						</div>
+						<div id="create_form">
+							<form class="form-horizontal" id="form_club" method="post">
+								{% csrf_token %}
+								<div class="control-group">
+									<label class="control-label">队名</label>
+									<div class="controls">
+										{{ form.name }}
+										<ul id="name_errors" class="errors" style="color: red;">
+										</ul>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">联赛</label>
+									<div class="controls">
+										{{ form.league }}
+										<ul id="league_errors" class="errors" style="color: red;">
+										</ul>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">城市</label>
+									<div class="controls">
+										{{ form.city }}
+										<ul id="city_errors" class="errors" style="color: red;">
+										</ul>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">国家</label>
+									<div class="controls">
+										{{ form.country }}
+										<ul id="country_errors" class="errors" style="color: red;">
+										</ul>
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="controls">
+										<button class="btn btn-primary" type="button" id="id_submit"><i class="fa fa-send"></i> 提交</button>
+										<!--<button class="btn btn-danger" type="button" id="id_reset"><i class="fa fa-times-circle"></i> 清空</button>-->
+									</div>
+								</div>
+								<input type="reset" style="display:none;" id="club_reset" /> 
+							</form>
+						</div>
+					</div>
+					<div class="tab-pane" id="party">
+						<div class="page-header">
+							<h1>查询俱乐部信息</h1>
+						</div>
+						<div id="club_result">
+							<div id="club_result_inner">
+								正在载入...
+							</div>
+						</div>
+						<form id="hiddenform">
+							{% csrf_token %}
+							<input id="id_delnum" name="delnum" type="hidden"/>
+						</form>
+
+					</div>					
+				</div>
+
+			</div>
+		</div>
+		</div>
+
+		<!-- jquery code  -->
+		<script type="text/javascript">
+			$("#id_submit").click(function(){
+				$(".errors").html("");
+				$.ajax({ // create an AJAX call...
+					dataType: "json",
+					data: $("#form_club").serialize(),
+					type: "POST", // GET or POST
+					url: "", // the file to call
+					success: function(response) { // on success..
+						if (response.error) {
+							$.each(response.errorlist, function( key, val) {
+								$("#"+key+"_errors").append("<li>"+val+"</li>");
+							});
+						} else {
+							alert("添加成功！")
+							$("input#club_reset").trigger("click");
+						}
+						//$("div#guest_result_inner").html($(response));
+					}
+				});
+			})
+			$("a#show_club_result").click(function(){
+				$.ajax({ // create an AJAX call...
+					type: "GET", // GET or POST
+					url: "result", // the file to call
+					success: function(response) { // on success..
+						$("div#club_result_inner").html($(response));
+					}
+				});
+			})
+
+			function deleteclub(pk) {
+				$("#id_delnum").val(pk)
+				$.ajax({ // create an AJAX call...
+					type: "POST", // GET or POST
+					data: $("#hiddenform").serialize(),
+	   				url: "result", // the file to call
+					success: function(response) { // on success..
+						$("div#club_result_inner").html($(response));
+					}
+				});		
+			}
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,18 @@
+<table class="table table-hover">
+	<tbody>
+		<tr align="center">
+			<th>姓名</th>
+			<th>生日</th>
+			<th>国籍</th>
+			<th>删除？</th>
+		</tr>
+		{% for coach in coachset %}
+		<tr align="center">
+			<td>{{ coach.name }}</td>
+			<td>{{ coach.birthday }}</td>
+			<td>{{ coach.get_nationality_display }}</td>
+			<td><button class="btn btn-danger" type="button" id="coach_delete_{{ coach.pk }}" onclick="deletecoach({{ coach.pk }})"><i class="fa fa-trash-o"></i></button></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

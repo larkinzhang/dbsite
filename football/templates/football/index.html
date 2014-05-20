@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>足球信息管理系统</title>
+		<link href="{% get_static_prefix %}football/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/docs.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/datetimepicker.css" rel="stylesheet" media="screen" />
+		<link href="{% get_static_prefix %}football/css/font-awesome.min.css" rel="stylesheet" media="screen" />
+		<script src="{% get_static_prefix %}football/js/jquery-1.10.2.min.js" type="text/javascript">
+		</script>
+		<script src="{% get_static_prefix %}football/js/bootstrap.min.js" type="text/javascript">
+		</script>
+		<script src="{% get_static_prefix %}football/js/bootstrap-datetimepicker.min.js">
+		</script>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#party_time').datetimepicker({
+					language:  'en-US',
+					weekStart: 1,
+					todayBtn:  1,
+					autoclose: 1,
+					todayHighlight: 1,
+					startView: 2,
+					forceParse: 0,
+					showMeridian: 1
+				});
+			});
+	</script>
+	</head>
+	<body>
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="brand" href="javascript:void(0)">足球信息管理系统</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav">
+							<li class="active">
+							<a href="/football" id="link-questions">主页</a>
+							</li>
+							<li class="">
+							<a href="/football/player" id="link-hiThere">球员信息</a>
+							</li>
+							<li class="">
+							<a href="/football/coach" id="link-function">教练信息</a>
+							</li>
+							<li class="">
+							<a href="/football/club" id="link-popups">球队信息</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<header>
+			<div class="container">
+			</div>
+		</header>
+		<div class="container">
+		<div class="row tabbable">
+			<div class="span3 bs-docs-sidebar">
+				<ul class="nav nav-list bs-docs-sidenav">
+					<li class="active"><a href="#question" data-toggle="tab"><i class="icon-chevron-right"></i>欢迎</a></li>
+					<li><a href="#guest" data-toggle="tab"><i class="icon-chevron-right"></i>加入一个球员</a></li>
+					<!--<li><a href="#party" data-toggle="tab"><i class="icon-chevron-right"></i>Start a party </a></li>-->
+				</ul>
+			</div>
+			<div class="span9">
+				<div class="tab-content">
+
+					<div class="tab-pane active" id="question">
+					</div>
+
+					<div class="tab-pane" id="guest">
+						<div class="page-header">
+							<h1>Guest</h1>
+						</div>
+						<div id="guest_form">
+							<form class="form-horizontal" id="form_guest">
+								<div class="control-group">
+									<label class="control-label">Name</label>
+									<div class="controls">
+										<input type="text" name="name" id="guest_name" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Age</label>
+									<div class="controls">
+										<input type="text" name="age" id="guest_age" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Gender</label>
+									<div class="controls">
+										<input type = "radio"  name = "gender"  value = "male"  
+										checked = "checked" /> Male 
+										<input type = "radio"  name = "gender"  value = "female" /> 
+										Female
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">E-mail address</label>
+									<div class="controls">
+										<input type="email" name="email" id="guest_email" />				    
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="controls">
+										<button class="btn btn-large btn-primary" type="button" id="guest_submit">Submit</button>   
+									</div>
+								</div>
+								<input type="reset" style="display:none;" id="guest_reset" /> 
+								<div class="control-group">
+									<div class="controls">
+										Click <a href="javascript:void(0)" id="guest_to_result">here</a> to directly see the result!
+									</div>
+								</div>
+							</form>
+						</div>
+						<div id="guest_result" style="display:none;">
+							<div id="guest_result_inner">
+							</div>
+							<button class="btn btn-danger" type="button" id="guest_btn_delete">Confirm</button> <br /><br />
+							Click <a href="javascript:void(0)" id="guest_to_form">here</a> to go back.
+						</div>
+					</div>
+					<div class="tab-pane" id="party">
+						<div class="page-header">
+							<h1>Party</h1>
+						</div>
+						<div id="party_form">
+							<form action="party_submit.php" method="post" class="form-horizontal">
+								<div class="control-group">
+									<label class="control-label">Party Name</label>
+									<div class="controls">
+										<input type="text" name="name" id="party_name" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Place</label>
+									<div class="controls">
+										<input type="text" name="place" id="party_place" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Time</label>
+									<div class="controls">
+										<input type="text" name="time" id="party_time" />										
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">E-mail address</label>
+									<div class="controls">
+										<input type="email" name="email" id="party_email" />				    
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="controls">
+										<input class="btn btn-large btn-primary" type="submit" value="Submit" />   
+									</div>
+								</div>
+								<input type="reset" style="display:none;" id="party_reset" />
+								<div class="control-group">
+									<div class="controls">
+										Click <a href="javascript:void(0)" id="party_to_result">here</a> to directly see the result!
+									</div>
+								</div>
+							</form>
+						</div>
+						<div id="party_result" style="display:none;">
+							<div id="party_result_inner">
+							</div>
+							<button class="btn btn-danger" type="button" id="party_btn_delete">Confirm</button> <br /><br />
+							Click <a href="javascript:void(0)" id="party_to_form">here</a> to go back.
+						</div>
+					</div>					
+				</div>
+
+			</div>
+		</div>
+		</div>
+
+		<!-- jquery code  -->
+		<script type="text/javascript">
+			$("#guest_submit").click(function(){
+					$.ajax({ // create an AJAX call...
+data: $("#form_guest").serialize(),
+type: "POST", // GET or POST
+url: "guest_submit.php", // the file to call
+success: function(response) { // on success..
+$("div#guest_result_inner").html($(response));
+$("div#guest_form").fadeToggle("slow",function(){$("div#guest_result").fadeToggle("slow");});
+}
+});
+					})
+$("#guest_btn_delete").click(function(){
+		$.ajax({ // create an AJAX call...
+data: $("#guest_delete").serialize(),
+type: "GET", // GET or POST
+url: "guest_delete.php", // the file to call
+success: function(response) { // on success..
+$("div#guest_result_inner").html($(response));
+//		$("div#guest_form").fadeToggle("slow",function(){$("div#guest_result").fadeToggle("slow");});
+}
+});
+		})
+
+$("a#guest_to_result").click(function(){
+		$.ajax({ // create an AJAX call...
+type: "GET", // GET or POST
+url: "guest_show.php", // the file to call
+success: function(response) { // on success..
+$("div#guest_result_inner").html($(response));
+$("div#guest_form").fadeToggle("slow",function(){$("div#guest_result").fadeToggle("slow");});
+}
+});
+		})
+
+$("a#party_to_result").click(function(){
+		$("div#party_form").fadeToggle("slow",function(){$("div#party_result").fadeToggle("slow");});
+		})
+$("a#guest_to_form").click(function(){
+		$("input#guest_reset").trigger("click");
+		$("div#guest_result").fadeToggle("slow",function(){$("div#guest_form").fadeToggle("slow");});
+		})
+
+</script>
+	</body>
+</html>

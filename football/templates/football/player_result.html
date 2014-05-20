@@ -1,0 +1,24 @@
+<table class="table table-hover">
+	<tbody>
+		<tr align="center">
+			<th>姓名</th>
+			<th>生日</th>
+			<th>国籍</th>
+			<th>身高</th>
+			<th>体重</th>
+			<th>场上位置</th>
+			<th>删除？</th>
+		</tr>
+		{% for player in playerset %}
+		<tr align="center">
+			<td>{{ player.name }}</td>
+			<td>{{ player.birthday }}</td>
+			<td>{{ player.get_nationality_display }}</td>
+			<td>{{ player.height }} cm</td>
+			<td>{{ player.weight }} kg</td>
+			<td>{{ player.get_position_display }}</td>
+			<td><button class="btn btn-danger" type="button" id="player_delete_{{ player.pk }}" onclick="deleteplayer({{ player.pk }})"><i class="fa fa-trash-o"></i></button></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
