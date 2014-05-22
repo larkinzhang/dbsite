@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     (r'^football/', include('football.urls')),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'football/login.html'}),
 )
