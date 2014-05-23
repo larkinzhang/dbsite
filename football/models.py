@@ -92,8 +92,8 @@ class PlayerTransferRecord(models.Model):
 
 class CoachTransferRecord(models.Model):
     coach = models.ForeignKey(Coach)
-    club_from = models.ForeignKey(Club, related_name="coach_from")
-    club_to = models.ForeignKey(Club, related_name="coach_to")
+    club_from = models.ForeignKey(Club, related_name="coach_from", null=True, blank=True)
+    club_to = models.ForeignKey(Club, related_name="coach_to", null=True, blank=True)
     season = models.IntegerField(null = True, blank = True)
     fee = models.FloatField(null = True, blank = True)
     pending = models.IntegerField()

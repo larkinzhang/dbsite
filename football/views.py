@@ -39,18 +39,42 @@ def player(request):
 
 @login_required
 def coach(request):
-    if not request.user.is_superuser:
-        return HttpResponse("没有权限！")
-    if request.method == 'POST':
-        form = CoachForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse(simplejson.dumps({ "error": False }))
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            form = CoachForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponse(simplejson.dumps({ "error": False }))
+            else:
+                return HttpResponse(simplejson.dumps({ "error": True, "errorlist": form.errors }))
         else:
-            return HttpResponse(simplejson.dumps({ "error": True, "errorlist": form.errors }))
+            form = CoachForm();
+            return render_to_response('football/coach.html', {'form':form}, context_instance=RequestContext(request))
     else:
-        form = CoachForm();
-        return render_to_response('football/coach.html', {'form':form}, context_instance=RequestContext(request))
+        if request.method == 'POST':
+            club = Club.objects.get(admin=request.user)
+            coachpk = request.POST.get('coachpk', '')
+            typeid = int(request.POST.get('type', ''))
+            if typeid == 1:
+                coach = Coach.objects.get(pk=coachpk)
+                ctr = CoachTransferRecord(coach=coach, club_from=club, club_to=None, season=date.today().year, fee=0, pending=0)
+                ctr.save()
+                coach.club = None
+                coach.save()
+            else:
+                coach = Coach.objects.get(pk=coachpk)
+                ctr = CoachTransferRecord(coach=coach, club_from=None, club_to=club, season=date.today().year, fee=0, pending=0)
+                ctr.save()
+                coach.club = club
+                coach.save()
+
+            return render_to_response('football/coach_trade.html', {"current":None}, context_instance=RequestContext(request))
+        else:
+            club = Club.objects.get(admin=request.user)
+            coach = club.coach_set.all()
+            if coach:
+                coach = coach[0]
+            return render_to_response('football/coach_trade.html', {"current":coach}, context_instance=RequestContext(request))
 
 @login_required
 def club(request):
@@ -228,33 +252,48 @@ def player_trade(request):
     playerrecord = PlayerTransferRecord.objects.all().filter(club_from=club).filter(pending=1)
 
     if request.method == 'POST':
+        typeid = int(request.POST.get('type', ''))
         approvenum = request.POST.get('approvenum', '')
-        try:
-            record = playerrecord.get(pk=approvenum)
-        except (KeyError, PlayerTransferRecord.DoesNotExist):
-            return HttpResponse("<strong>Error!</strong>")
+
+        if typeid == 1:
+            try:
+                record = playerrecord.get(pk=approvenum)
+            except (KeyError, PlayerTransferRecord.DoesNotExist):
+                return HttpResponse("<strong>Error!</strong>")
+            else:
+                player = record.player
+                player.club = record.club_to
+                player.save()
+
+                record.pending = 0;
+                record.save()
+
+                playerrecord = PlayerTransferRecord.objects.all().filter(club_from=club).filter(pending=1)
         else:
-            player = record.player
-            player.club = record.club_to
-            player.save()
+            try:
+                record = playerrecord.get(pk=approvenum)
+            except (KeyError, PlayerTransferRecord.DoesNotExist):
+                return HttpResponse("<strong>Error!</strong>")
+            else:
+                record.delete()
 
-            record.pending = 0;
-            record.save()
-
-            playerrecord = PlayerTransferRecord.objects.all().filter(club_from=club).filter(pending=1)
+                playerrecord = PlayerTransferRecord.objects.all().filter(club_from=club).filter(pending=1)
             
     return render_to_response('football/player_notification_list.html', {'playerrecord':playerrecord}, context_instance=RequestContext(request))
 
 @login_required
 def coach_result(request):
-    if not request.user.is_superuser:
-        return HttpResponse("没有权限！")
     if request.method == 'POST':
         delnum = request.POST.get('delnum', '')
         coach = Coach.objects.get(pk=delnum)
         coach.delete()
 
     coachset = Coach.objects.all()
+
+    if not request.user.is_superuser:
+        club = Club.objects.get(admin=request.user)
+        coachset = coachset.filter(club=None)
+
     return render_to_response('football/coach_result.html', {'coachset':coachset}, context_instance=RequestContext(request))
 
 @login_required
@@ -269,7 +308,7 @@ def coach_detail(request):
         else:
             coach = Coach.objects.get(pk=detailnum)
             coachrecord = coach.coachingrecord_set.all()
-            return render_to_response('football/coach_detail2.html', {'coach':player, 'coachrecord':coachrecord}, context_instance=RequestContext(request))
+            return render_to_response('football/coach_detail2.html', {'coach':coach, 'coachrecord':coachrecord}, context_instance=RequestContext(request))
     else:
         return HttpResponse("error!")
 

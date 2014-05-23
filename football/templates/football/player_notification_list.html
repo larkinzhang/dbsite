@@ -89,6 +89,7 @@
 						<th>转会后俱乐部</th>
 						<th>转会费</th>
 						<th>同意？</th>
+						<th>忽略</th>
 					</tr>
 					{% for record in playerrecord %}
 					<tr align="center">
@@ -97,6 +98,7 @@
 						<td>{{ record.club_to.name }}</td>
 						<td>{{ record.fee }}</td>
 						<td><button class="btn btn-mini btn-info" type="button" id="player_approve_{{ record.pk }}" onclick="approve({{ record.pk }})"><i class="fa fa-check"></i></button></td>
+						<td><button class="btn btn-mini btn-danger" type="button" id="player_approve_{{ record.pk }}" onclick="deleteele({{ record.pk }})"><i class="fa fa-trash-o"></i></button></td>
 					</tr>
 					{% endfor %}
 				</tbody>
@@ -105,6 +107,7 @@
 			</div>
 			<form id="hiddenform" method="post">
 				{% csrf_token %}
+				<input id="id_type" name="type" type="hidden"/>				
 				<input id="id_approvenum" name="approvenum" type="hidden"/>
 				<input id="hidden_submit" type="submit" style="display:none;" />
 			</form>
@@ -116,9 +119,16 @@
 		<!-- jquery code  -->
 		<script>
 			function approve(pk) {
+				$("#id_type").val(1)
 				$("#id_approvenum").val(pk)
 				$("input#hidden_submit").trigger("click");	
 			}
+			function deleteele(pk) {
+				$("#id_type").val(2)
+				$("#id_approvenum").val(pk)
+				$("input#hidden_submit").trigger("click");	
+			}
+
 		</script>
 
 		<div id="detailModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">

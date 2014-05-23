@@ -9,6 +9,8 @@
 			<th>转会记录</th>
 			{% if user.is_superuser %}			
 			<th>删除？</th>
+			{% else %}
+			<th>招募</th>
 			{% endif %}
 		</tr>
 		{% for coach in coachset %}
@@ -21,6 +23,15 @@
 			<td><button class="btn btn-info btn-mini" type="button" id="player_detail_{{ coach.pk }}" onclick="viewdetail({{ coach.pk }})"><i class="fa fa-search-plus"></i></button></td>			
 			{% if user.is_superuser %}
 			<td><button class="btn btn-danger btn-mini" type="button" id="coach_delete_{{ coach.pk }}" onclick="deletecoach({{ coach.pk }})"><i class="fa fa-trash-o"></i></button></td>
+			{% else %}
+			<td>
+				<form method="post">
+					{% csrf_token %}
+					<input name="type" value="2" type="hidden"/>
+					<input name="coachpk" value="{{ coach.pk }}" type="hidden"/>
+					<button type="submit" class="btn btn-success btn-mini"><i class="fa fa-check"></i></button>
+				</form>
+			</td>
 			{% endif %}
 		</tr>
 		{% endfor %}

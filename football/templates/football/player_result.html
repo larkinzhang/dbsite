@@ -30,13 +30,18 @@
 			<td>{{ player.height }} cm</td>
 			<td>{{ player.weight }} kg</td>
 			<td>{{ player.get_position_display }}</td>
-			<td><button class="btn btn-info btn-mini" type="button" id="player_detail2_{{ player.pk }}" onclick="viewdetail2({{ player.pk }})"><i class="fa fa-search-plus"></i></button></td>
-			<td><button class="btn btn-info btn-mini" type="button" id="player_detail_{{ player.pk }}" onclick="viewdetail({{ player.pk }})"><i class="fa fa-search-plus"></i></button></td>
+			<td><button class="btn btn-info" type="button" id="player_detail2_{{ player.pk }}" onclick="viewdetail2({{ player.pk }})"><i class="fa fa-search-plus"></i></button></td>
+			<td><button class="btn btn-info" type="button" id="player_detail_{{ player.pk }}" onclick="viewdetail({{ player.pk }})"><i class="fa fa-search-plus"></i></button></td>
 			{% if user.is_superuser %}
-			<td><button class="btn btn-danger btn-mini" type="button" id="player_delete_{{ player.pk }}" onclick="deleteplayer({{ player.pk }})"><i class="fa fa-trash-o"></i></button></td>
+			<td><button class="btn btn-danger" type="button" id="player_delete_{{ player.pk }}" onclick="deleteplayer({{ player.pk }})"><i class="fa fa-trash-o"></i></button></td>
 			{% else %}
 			{% if datatype > 1 %}
-			<td><button class="btn btn-warning btn-mini" type="button" id="player_delete_{{ player.pk }}" onclick="request({{ player.pk }})"><i class="fa fa-question-circle"></i></button></td>
+			<td>
+				<div class="input-append">
+					<input class="span1" id="request_money_{{ player.pk }}" type="text">
+					<button class="btn btn-primary" type="button" id="player_request_{{ player.pk }}" onclick="request({{ player.pk }})"><i class="fa fa-send"></i></button>
+				</div>
+			</td>
 			{% endif %}
 			{% endif %}
 		</tr>
@@ -114,7 +119,7 @@
 
 	</div>
 	<div class="modal-footer">
-		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
 		<button class="btn btn-primary" data-dismiss="modal" type="submit" id="id_filter_submit" aria-hidden="true"><i class="fa fa-send"></i> 提交</button>
 	</div>
 </div>
