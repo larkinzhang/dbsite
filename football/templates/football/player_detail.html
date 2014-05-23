@@ -1,0 +1,28 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h3 id="detailModalLabel">{{ player.name }}的转会记录</h3>
+</div>
+<div class="modal-body">
+	<table class="table table-hover">
+		<tbody>
+		<tr align="center">
+			<th>赛季</th>
+			<th>转会前俱乐部</th>			
+			<th>转会后俱乐部</th>
+			<th>转会费</th>
+		</tr>
+		{% for record in playerrecord %}
+		<tr align="center">
+			<td>{{ record.season }}</td>
+			<td>{{ record.club_from.name }}</td>			
+			<td>{{ record.club_to.name }}</td>
+			<td>{{ record.fee }}</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+</div>
+

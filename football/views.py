@@ -9,10 +9,11 @@ from django.utils import simplejson
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 from datetime import datetime
 from datetime import timedelta
 from football.forms import PlayerForm, CoachForm, ClubForm
-from football.models import Player, Coach, Club
+from football.models import Player, Coach, Club, PlayerTransferRecord, CoachTransferRecord
 
 @login_required
 def index(request):
@@ -73,15 +74,30 @@ def club(request):
 
 @login_required
 def player_result(request):
-    if not request.user.is_superuser:
-        return HttpResponse("没有权限！")
     if request.method == 'POST':
+        if not request.user.is_superuser:
+            return HttpResponse("没有权限！")
         delnum = request.POST.get('delnum', '')
         player = Player.objects.get(pk=delnum)
         player.delete()
 
     playerset = Player.objects.all()
+    if not request.user.is_superuser:
+        club = Club.objects.get(admin=request.user)
+        playerset = playerset.filter(~Q(club=club))
+
     return render_to_response('football/player_result.html', {'playerset':playerset}, context_instance=RequestContext(request))
+
+@login_required
+def player_detail(request):
+    if request.method == 'POST':
+        detailnum = request.POST.get('detailnum', '')
+        player = Player.objects.get(pk=detailnum)
+        playerrecord = player.playertransferrecord_set.all()
+
+        return render_to_response('football/player_detail.html', {'player':player, 'playerrecord':playerrecord}, context_instance=RequestContext(request))
+    else:
+        return HttpResponse("error!")
 
 @login_required
 def coach_result(request):
@@ -94,6 +110,17 @@ def coach_result(request):
 
     coachset = Coach.objects.all()
     return render_to_response('football/coach_result.html', {'coachset':coachset}, context_instance=RequestContext(request))
+
+@login_required
+def coach_detail(request):
+    if request.method == 'POST':
+        detailnum = request.POST.get('detailnum', '')
+        coach = Coach.objects.get(pk=detailnum)
+        coachrecord = coach.coachtransferrecord_set.all()
+
+        return render_to_response('football/coach_detail.html', {'coach':coach, 'coachrecord':coachrecord}, context_instance=RequestContext(request))
+    else:
+        return HttpResponse("error!")
 
 @login_required
 def club_result(request):

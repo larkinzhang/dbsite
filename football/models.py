@@ -47,8 +47,10 @@ class Club(models.Model):
 
 class Coach(models.Model):
     name = models.CharField(max_length=50)
+    club = models.ForeignKey(Club,null=True,blank=True)
     birthday = models.DateField(null=True,blank=True)
     nationality = models.CharField(max_length=50,null=True,blank=True,choices=NATIONALITY_CHOICES)
+    
     def __unicode__(self):
         return self.name
 
