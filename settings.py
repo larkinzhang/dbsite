@@ -124,9 +124,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'football',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
+    'guardian',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -151,3 +152,12 @@ LOGGING = {
         },
     }
 }
+
+ANONYMOUS_USER_ID = None
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+LOGIN_REDIRECT_URL = '/football'

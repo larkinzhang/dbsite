@@ -47,24 +47,22 @@
 					<a class="brand" href="/football">足球信息管理系统</a>
 					<div class="nav-collapse collapse">
 						<ul class="nav">
-							<li class="">
-							<a href="/football/player" id="link-hiThere">球员信息</a>
-							</li>
 							<li class="active">
-							<a href="/football/coach" id="link-popups">教练信息</a>
+							<a href="/football/player" id="link-hiThere">球员交易</a>
 							</li>
 							<li class="">
-							<a href="/football/club" id="link-function">俱乐部信息</a>
+							<a href="/football/coach" id="link-popups">教练任命</a>
 							</li>
 						</ul>
 					</div>
 					<div class="btn-group pull-right">
 						<a class="btn dropdown-toggle btn-inverse" data-toggle="dropdown" href="#">
-		   					<i class="fa fa-user fa-fw"></i> {{ user.username }}
+							<i class="fa fa-user fa-fw"></i> {{ user.username }}
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-						<!-- dropdown menu links -->
+							<!-- dropdown menu links -->
+							<li id="logout"><a href="javascript:void(0)">交易请求</a></li>
 							<li id="logout"><a href="/accounts/logout">登出</a></li>
 						</ul>
 					</div>
@@ -80,59 +78,23 @@
 		<div class="row tabbable">
 			<div class="span3 bs-docs-sidebar">
 				<ul class="nav nav-list bs-docs-sidenav">
-					<li class="active"><a href="#create" data-toggle="tab"><i class="icon-chevron-right"></i>添加新的教练</a></li>
-					<li><a href="#party" data-toggle="tab" id="show_coach_result"><i class="icon-chevron-right"></i>查询教练信息</a></li>
+					<li class="active"><a href="#create" data-toggle="tab"><i class="icon-chevron-right"></i>俱乐部现有球员</a></li>
+					<li><a href="#party" data-toggle="tab" id="show_player_result"><i class="icon-chevron-right"></i>球员交易</a></li>
 				</ul>
 			</div>
 			<div class="span9">
 				<div class="tab-content">
 					<div class="tab-pane active" id="create">
 						<div class="page-header">
-							<h1>添加新的教练</h1>
-						</div>
-						<div id="create_form">
-							<form class="form-horizontal" id="form_coach" method="post">
-								{% csrf_token %}
-								<div class="control-group">
-									<label class="control-label">姓名</label>
-									<div class="controls">
-										{{ form.name }}
-										<ul id="name_errors" class="errors" style="color: red;">
-										</ul>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label">生日</label>
-									<div class="controls">
-										{{ form.birthday }}
-										<ul id="birthday_errors" class="errors" style="color: red;">
-										</ul>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label">国籍</label>
-									<div class="controls">
-										{{ form.nationality }}
-										<ul id="nationality_errors" class="errors" style="color: red;">
-										</ul>
-									</div>
-								</div>
-								<div class="control-group">
-									<div class="controls">
-										<button class="btn btn-primary" type="button" id="id_submit"><i class="fa fa-send"></i> 提交</button>
-										<!--<button class="btn btn-danger" type="button" id="id_reset"><i class="fa fa-times-circle"></i> 清空</button>-->
-									</div>
-								</div>
-								<input type="reset" style="display:none;" id="coach_reset" /> 
-							</form>
+							<h1>俱乐部现有球员</h1>
 						</div>
 					</div>
 					<div class="tab-pane" id="party">
 						<div class="page-header">
-							<h1>查询教练信息</h1>
+							<h1>球员交易</h1>
 						</div>
-						<div id="coach_result">
-							<div id="coach_result_inner">
+						<div id="player_result">
+							<div id="player_result_inner">
 								正在载入...
 							</div>
 						</div>
@@ -154,7 +116,7 @@
 				$(".errors").html("");
 				$.ajax({ // create an AJAX call...
 					dataType: "json",
-					data: $("#form_coach").serialize(),
+					data: $("#form_player").serialize(),
 					type: "POST", // GET or POST
 					url: "", // the file to call
 					success: function(response) { // on success..
@@ -164,30 +126,30 @@
 							});
 						} else {
 							alert("添加成功！")
-							$("input#coach_reset").trigger("click");
+							$("input#player_reset").trigger("click");
 						}
 						//$("div#guest_result_inner").html($(response));
 					}
 				});
 			})
-			$("a#show_coach_result").click(function(){
+			$("a#show_player_result").click(function(){
 				$.ajax({ // create an AJAX call...
 					type: "GET", // GET or POST
 					url: "result", // the file to call
 					success: function(response) { // on success..
-						$("div#coach_result_inner").html($(response));
+						$("div#player_result_inner").html($(response));
 					}
 				});
 			})
 
-			function deletecoach(pk) {
+			function deleteplayer(pk) {
 				$("#id_delnum").val(pk)
 				$.ajax({ // create an AJAX call...
 					type: "POST", // GET or POST
 					data: $("#hiddenform").serialize(),
 	   				url: "result", // the file to call
 					success: function(response) { // on success..
-						$("div#coach_result_inner").html($(response));
+						$("div#player_result_inner").html($(response));
 					}
 				});		
 			}

@@ -44,12 +44,9 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="brand" href="javascript:void(0)">足球信息管理系统</a>
+					<a class="brand" href="/football">足球信息管理系统</a>
 					<div class="nav-collapse collapse">
 						<ul class="nav">
-							<li class="">
-							<a href="/football" id="link-questions">主页</a>
-							</li>
 							<li class="">
 							<a href="/football/player" id="link-hiThere">球员信息</a>
 							</li>
@@ -57,10 +54,21 @@
 							<a href="/football/coach" id="link-popups">教练信息</a>
 							</li>
 							<li class="active">
-							<a href="/football/club" id="link-function">球队信息</a>
+							<a href="/football/club" id="link-function">俱乐部信息</a>
 							</li>
 						</ul>
 					</div>
+					<div class="btn-group pull-right">
+						<a class="btn dropdown-toggle btn-inverse" data-toggle="dropdown" href="#">
+							<i class="fa fa-user fa-fw"></i> {{ user.username }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<!-- dropdown menu links -->
+							<li id="logout"><a href="/accounts/logout">登出</a></li>
+						</ul>
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -73,7 +81,7 @@
 		<div class="row tabbable">
 			<div class="span3 bs-docs-sidebar">
 				<ul class="nav nav-list bs-docs-sidenav">
-					<li class="active"><a href="#create" data-toggle="tab"><i class="icon-chevron-right"></i>加入新的俱乐部</a></li>
+					<li class="active"><a href="#create" data-toggle="tab"><i class="icon-chevron-right"></i>添加新的俱乐部</a></li>
 					<li><a href="#party" data-toggle="tab" id="show_club_result"><i class="icon-chevron-right"></i>查询俱乐部信息</a></li>
 				</ul>
 			</div>
@@ -81,7 +89,7 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="create">
 						<div class="page-header">
-							<h1>加入俱乐部球员</h1>
+							<h1>添加俱乐部球员</h1>
 						</div>
 						<div id="create_form">
 							<form class="form-horizontal" id="form_club" method="post">
@@ -119,8 +127,25 @@
 									</div>
 								</div>
 								<div class="control-group">
+									<label class="control-label">管理员用户名</label>
+									<div class="controls">
+										{{ form.username }}
+										<ul id="username_errors" class="errors" style="color: red;">
+										</ul>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">管理员密码</label>
+									<div class="controls">
+										{{ form.password }}
+										<ul id="password_errors" class="errors" style="color: red;">
+										</ul>
+									</div>
+								</div>
+								<div class="control-group">
 									<div class="controls">
 										<button class="btn btn-primary" type="button" id="id_submit"><i class="fa fa-send"></i> 提交</button>
+								<input type="submit" />
 										<!--<button class="btn btn-danger" type="button" id="id_reset"><i class="fa fa-times-circle"></i> 清空</button>-->
 									</div>
 								</div>

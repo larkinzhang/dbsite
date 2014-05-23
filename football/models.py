@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.db import models
+from django.contrib.auth.models import User
 import datetime
 
 # Create your models here.
@@ -39,20 +40,31 @@ class Club(models.Model):
     league = models.CharField(max_length=50)
     city = models.CharField(max_length=50,null=True,blank=True)
     country = models.CharField(max_length=50,null=True,blank=True,choices=NATIONALITY_CHOICES)
+    admin = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return self.name
 
 class Coach(models.Model):
     name = models.CharField(max_length=50)
     birthday = models.DateField(null=True,blank=True)
     nationality = models.CharField(max_length=50,null=True,blank=True,choices=NATIONALITY_CHOICES)
+    def __unicode__(self):
+        return self.name
 
 class Player(models.Model):
     name = models.CharField(max_length=50)
+    club = models.ForeignKey(Club)
     birthday = models.DateField(null=True,blank=True)
     nationality = models.CharField(max_length=50,null=True,blank=True,choices=NATIONALITY_CHOICES)
     height = models.IntegerField(null=True,blank=True)
     weight = models.IntegerField(null=True,blank=True)
     position = models.CharField(max_length=1000,null=True,blank=True,choices=POSITION_CHOICES)
 
+    def __unicode__(self):
+        return self.name
+
+'''
 class PlayingRecord(models.Model):
     player_name = models.ForeignKey(Player)
     club_name = models.ForeignKey(Club)
@@ -68,12 +80,18 @@ class CoachingRecord(models.Model):
     end_season = models.IntegerField(null = True, blank = True)
     games = models.IntegerField(null = True, blank = True)
     wins = models.IntegerField(null = True, blank = True)
+'''
 
-class TransferRecord(models.Model):
-    player_name = models.ForeignKey(Player)
-    club_from = models.ForeignKey(Club, related_name="club_from")
-    club_to = models.ForeignKey(Club, related_name="club_to")
+class PlayerTransferRecord(models.Model):
+    player = models.ForeignKey(Player)
+    club_from = models.ForeignKey(Club, related_name="player_from")
+    club_to = models.ForeignKey(Club, related_name="player_to")
     season = models.IntegerField(null = True, blank = True)
     fee = models.FloatField(null = True, blank = True)
 
-
+class CoachTransferRecord(models.Model):
+    coach = models.ForeignKey(Coach)
+    club_from = models.ForeignKey(Club, related_name="coach_from")
+    club_to = models.ForeignKey(Club, related_name="coach_to")
+    season = models.IntegerField(null = True, blank = True)
+    fee = models.FloatField(null = True, blank = True)
