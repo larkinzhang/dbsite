@@ -5,8 +5,11 @@
 			<th>俱乐部</th>			
 			<th>生日</th>
 			<th>国籍</th>
-			<th>转会记录</th>			
+			<th>比赛记录</th>
+			<th>转会记录</th>
+			{% if user.is_superuser %}			
 			<th>删除？</th>
+			{% endif %}
 		</tr>
 		{% for coach in coachset %}
 		<tr align="center">
@@ -14,8 +17,11 @@
 			<td>{{ coach.club.name }}</td>			
 			<td>{{ coach.birthday }}</td>
 			<td>{{ coach.get_nationality_display }}</td>
-			<td><button class="btn btn-info" type="button" id="player_detail_{{ player.pk }}" onclick="viewdetail({{ coach.pk }})"><i class="fa fa-search-plus"></i></button></td>			
-			<td><button class="btn btn-danger" type="button" id="coach_delete_{{ coach.pk }}" onclick="deletecoach({{ coach.pk }})"><i class="fa fa-trash-o"></i></button></td>
+			<td><button class="btn btn-info btn-mini" type="button" id="player_detail2_{{ coach.pk }}" onclick="viewdetail2({{ coach.pk }})"><i class="fa fa-search-plus"></i></button></td>
+			<td><button class="btn btn-info btn-mini" type="button" id="player_detail_{{ coach.pk }}" onclick="viewdetail({{ coach.pk }})"><i class="fa fa-search-plus"></i></button></td>			
+			{% if user.is_superuser %}
+			<td><button class="btn btn-danger btn-mini" type="button" id="coach_delete_{{ coach.pk }}" onclick="deletecoach({{ coach.pk }})"><i class="fa fa-trash-o"></i></button></td>
+			{% endif %}
 		</tr>
 		{% endfor %}
 	</tbody>

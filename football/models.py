@@ -66,23 +66,21 @@ class Player(models.Model):
     def __unicode__(self):
         return self.name
 
-'''
 class PlayingRecord(models.Model):
-    player_name = models.ForeignKey(Player)
-    club_name = models.ForeignKey(Club)
+    player = models.ForeignKey(Player)
+    club = models.ForeignKey(Club)
     start_season = models.IntegerField(null = True, blank = True)
     end_season = models.IntegerField(null = True, blank = True)
     games = models.IntegerField(null = True, blank = True)
     goals = models.IntegerField(null = True, blank = True)
 
 class CoachingRecord(models.Model):
-    coach_name = models.ForeignKey(Coach)
-    club_name = models.ForeignKey(Club)
+    coach = models.ForeignKey(Coach)
+    club = models.ForeignKey(Club)
     start_season = models.IntegerField(null = True, blank = True)
     end_season = models.IntegerField(null = True, blank = True)
     games = models.IntegerField(null = True, blank = True)
     wins = models.IntegerField(null = True, blank = True)
-'''
 
 class PlayerTransferRecord(models.Model):
     player = models.ForeignKey(Player)
@@ -90,6 +88,7 @@ class PlayerTransferRecord(models.Model):
     club_to = models.ForeignKey(Club, related_name="player_to")
     season = models.IntegerField(null = True, blank = True)
     fee = models.FloatField(null = True, blank = True)
+    pending = models.IntegerField()
 
 class CoachTransferRecord(models.Model):
     coach = models.ForeignKey(Coach)
@@ -97,3 +96,4 @@ class CoachTransferRecord(models.Model):
     club_to = models.ForeignKey(Club, related_name="coach_to")
     season = models.IntegerField(null = True, blank = True)
     fee = models.FloatField(null = True, blank = True)
+    pending = models.IntegerField()

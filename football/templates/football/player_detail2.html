@@ -1,0 +1,30 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h3 id="detailModalLabel">{{ player.name }}的比赛记录</h3>
+</div>
+<div class="modal-body">
+	<table class="table table-hover">
+		<tbody>
+		<tr align="center">
+			<th>俱乐部</th>
+			<th>起始赛季</th>
+			<th>终止赛季</th>			
+			<th>比赛场数</th>
+			<th>进球数</th>
+		</tr>
+		{% for record in playerrecord %}
+		<tr align="center">
+			<td>{{ record.club.name }}</td>
+			<td>{{ record.start_season }}</td>			
+			<td>{{ record.end_season }}</td>
+			<td>{{ record.games }}</td>
+			<td>{{ record.goals }}</td>			
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+</div>
+

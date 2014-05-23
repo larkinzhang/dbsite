@@ -201,22 +201,38 @@
 			}
 			function viewdetail(pk) {
 				$("#id_detailnum").val(pk)
+				$("#id_detailtype").val(1)					
 				$.ajax({ // create an AJAX call...
 					type: "POST", // GET or POST
 					data: $("#hiddenform2").serialize(),
 	   				url: "detail", // the file to call
 					success: function(response) { // on success..
 						$("div#detailModal").html($(response));
+						$('#detailModal').modal();
 					}
 				});	
-				$('#detailModal').modal();
 			}
+			function viewdetail2(pk) {
+				$("#id_detailnum").val(pk)
+				$("#id_detailtype").val(2)
+				$.ajax({ // create an AJAX call...
+					type: "POST", // GET or POST
+					data: $("#hiddenform2").serialize(),
+	   				url: "detail", // the file to call
+					success: function(response) { // on success..
+						$("div#detailModal").html($(response));
+						$('#detailModal').modal();
+					}
+				});	
+			}
+
 
 		</script>
 		<div id="detailModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
 		</div>
 		<form id="hiddenform2">
 			{% csrf_token %}
+			<input id="id_detailtype" name="detailtype" type="hidden"/>			
 			<input id="id_detailnum" name="detailnum" type="hidden"/>
 		</form>
 

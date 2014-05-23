@@ -1,3 +1,6 @@
+<p class="pull-right">
+	<button id="button_filter" class="btn" type="button">筛选</button>
+</p>
 <table class="table table-hover">
 	<tbody>
 		<tr align="center">
@@ -8,8 +11,15 @@
 			<th>身高</th>
 			<th>体重</th>
 			<th>场上位置</th>
+			<th>比赛记录</th>
 			<th>转会记录</th>
+			{% if user.is_superuser %}
 			<th>删除？</th>
+			{% else %}
+			{% if datatype > 1 %}
+			<th>转会请求</th>
+			{% endif %}
+			{% endif %}
 		</tr>
 		{% for player in playerset %}
 		<tr align="center">
@@ -20,9 +30,91 @@
 			<td>{{ player.height }} cm</td>
 			<td>{{ player.weight }} kg</td>
 			<td>{{ player.get_position_display }}</td>
-			<td><button class="btn btn-info" type="button" id="player_detail_{{ player.pk }}" onclick="viewdetail({{ player.pk }})"><i class="fa fa-search-plus"></i></button></td>
-			<td><button class="btn btn-danger" type="button" id="player_delete_{{ player.pk }}" onclick="deleteplayer({{ player.pk }})"><i class="fa fa-trash-o"></i></button></td>
+			<td><button class="btn btn-info btn-mini" type="button" id="player_detail2_{{ player.pk }}" onclick="viewdetail2({{ player.pk }})"><i class="fa fa-search-plus"></i></button></td>
+			<td><button class="btn btn-info btn-mini" type="button" id="player_detail_{{ player.pk }}" onclick="viewdetail({{ player.pk }})"><i class="fa fa-search-plus"></i></button></td>
+			{% if user.is_superuser %}
+			<td><button class="btn btn-danger btn-mini" type="button" id="player_delete_{{ player.pk }}" onclick="deleteplayer({{ player.pk }})"><i class="fa fa-trash-o"></i></button></td>
+			{% else %}
+			{% if datatype > 1 %}
+			<td><button class="btn btn-warning btn-mini" type="button" id="player_delete_{{ player.pk }}" onclick="request({{ player.pk }})"><i class="fa fa-question-circle"></i></button></td>
+			{% endif %}
+			{% endif %}
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
+
+<script>
+	$("#button_filter").click(function(){
+		$("#filterModal").modal()
+	});
+	$("#id_filter_submit").click(function(){
+		$.ajax({ // create an AJAX call...
+			type: "POST", // GET or POST
+			data: $("#form_player_filter").serialize(),
+			url: "result", // the file to call
+			success: function(response) { // on success..
+				$("div#player_result_inner").html($(response));
+			}
+		});		
+	});
+</script>
+
+<div id="filterModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="detailModalLabel">球员筛选</h3>
+	</div>
+	<div class="modal-body">
+		<form action="result" id="form_player_filter" method="post" >        
+			{% csrf_token %}
+			<input id="id_type_modal" name="type" type="hidden" value="2"/>
+			<input id="id_data_type_modal" name="data_type" type="hidden" value="{{ datatype }}"/>
+			<div class="control-group">
+				<label class="control-label">姓名</label>
+				<div class="controls">
+					{{ form.name }}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">年龄</label>
+				<div class="controls">
+					{{ form.age_type1 }}{{ form.age1 }}
+					{{ form.age_type2 }}{{ form.age2 }}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">国籍</label>
+				<div class="controls">
+					{{ form.nationality }}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">身高</label>
+				<div class="controls">
+					{{ form.height_type1 }}{{ form.height1 }}
+					{{ form.height_type2 }}{{ form.height2 }}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">体重</label>
+				<div class="controls">
+					{{form.weight_type1}}{{ form.weight1 }}
+					{{form.weight_type2}}{{ form.weight2 }}
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">场上位置</label>
+				<div class="controls">
+					{{ form.position1 }}{{ form.position2 }}{{ form.position3 }}
+				</div>
+			</div>
+
+		</form>   
+
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button class="btn btn-primary" data-dismiss="modal" type="submit" id="id_filter_submit" aria-hidden="true"><i class="fa fa-send"></i> 提交</button>
+	</div>
+</div>

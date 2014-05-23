@@ -13,7 +13,7 @@
 			<td>{{ club.league }}</td>
 			<td>{{ club.city }}</td>
 			<td>{{ club.get_country_display }}</td>
-			<td><button class="btn btn-danger" type="button" id="club_delete_{{ club.pk }}" onclick="deleteclub({{ club.pk }})"><i class="fa fa-trash-o"></i></button></td>
+			<td><button class="btn btn-danger btn-mini" type="button" id="club_delete_{{ club.pk }}" onclick="deleteclub({{ club.pk }})"><i class="fa fa-trash-o"></i></button></td>
 		</tr>
 		{% endfor %}
 	</tbody>

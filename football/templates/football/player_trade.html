@@ -62,7 +62,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							<!-- dropdown menu links -->
-							<li id="logout"><a href="javascript:void(0)">交易请求</a></li>
+							<li id="logout"><a href="trade">交易请求 <span class="badge {% if pending > 0 %} badge-warning {% endif %}">{{ pending }}</span></a></li>
 							<li id="logout"><a href="/accounts/logout">登出</a></li>
 						</ul>
 					</div>
@@ -78,7 +78,7 @@
 		<div class="row tabbable">
 			<div class="span3 bs-docs-sidebar">
 				<ul class="nav nav-list bs-docs-sidenav">
-					<li class="active"><a href="#create" data-toggle="tab"><i class="icon-chevron-right"></i>俱乐部现有球员</a></li>
+					<li class="active"><a href="#create" data-toggle="tab" id="show_player_current"><i class="icon-chevron-right"></i>俱乐部现有球员</a></li>
 					<li><a href="#party" data-toggle="tab" id="show_player_result"><i class="icon-chevron-right"></i>球员交易</a></li>
 				</ul>
 			</div>
@@ -88,19 +88,26 @@
 						<div class="page-header">
 							<h1>俱乐部现有球员</h1>
 						</div>
+						<div id="player_current">
+							<div id="player_result_inner">
+								正在载入...
+							</div>
+						</div>
 					</div>
 					<div class="tab-pane" id="party">
 						<div class="page-header">
 							<h1>球员交易</h1>
 						</div>
 						<div id="player_result">
-							<div id="player_result_inner">
-								正在载入...
-							</div>
+							正在载入...
 						</div>
 						<form id="hiddenform">
 							{% csrf_token %}
+							<input id="id_type" name="type" type="hidden"/>
 							<input id="id_delnum" name="delnum" type="hidden"/>
+							<input id="id_requestnum" name="requestnum" type="hidden"/>
+							<input id="id_money" name="money" type="hidden"/>
+							<input id="id_data_type" name="data_type" type="hidden"/>
 						</form>
 
 					</div>					
@@ -133,27 +140,94 @@
 				});
 			})
 			$("a#show_player_result").click(function(){
+				$("#id_data_type").val(2)
+				$("#id_type").val(0)
+				$("#player_result").html($("#player_current").html())
+				$("#player_current").html("")
+
 				$.ajax({ // create an AJAX call...
-					type: "GET", // GET or POST
+					type: "POST", // GET or POST
 					url: "result", // the file to call
+					data: $("#hiddenform").serialize(),
 					success: function(response) { // on success..
+						
 						$("div#player_result_inner").html($(response));
 					}
 				});
 			})
 
-			function deleteplayer(pk) {
-				$("#id_delnum").val(pk)
+			$("a#show_player_current").click(function(){
+				$("#id_data_type").val(1)
+				$("#id_type").val(0)
+				$("#player_current").html($("#player_result").html())
+				$("#player_result").html("")
+
 				$.ajax({ // create an AJAX call...
 					type: "POST", // GET or POST
+					url: "result", // the file to call
 					data: $("#hiddenform").serialize(),
-	   				url: "result", // the file to call
 					success: function(response) { // on success..
+						
 						$("div#player_result_inner").html($(response));
 					}
-				});		
+				});
+			})
+
+			$( document ).ready(function() {
+				$("#id_data_type").val(1)
+				$("#id_type").val(0)
+
+				$.ajax({ // create an AJAX call...
+					type: "POST", // GET or POST
+					url: "result", // the file to call
+					data: $("#hiddenform").serialize(),
+					success: function(response) { // on success..
+						
+						$("div#player_result_inner").html($(response));
+					}
+				});
+
+			});
+
+
+			function viewdetail(pk) {
+				$("#id_detailnum").val(pk)
+				$.ajax({ // create an AJAX call...
+					type: "POST", // GET or POST
+					data: $("#hiddenform2").serialize(),
+	   				url: "detail", // the file to call
+					success: function(response) { // on success..
+						$("div#detailModal").html($(response));
+						$('#detailModal').modal();
+					}
+				});	
+			}
+			function request(pk) {
+				$("#id_type").val(3)
+				$("#id_requestnum").val(pk)
+				$("#id_money").val(100000)
+
+				$.ajax({ // create an AJAX call...
+					dataType: "json",
+					data: $("#hiddenform").serialize(),
+					type: "POST", // GET or POST
+					url: "result", // the file to call
+					success: function(response) { // on success..
+						if (response.error) {
+							alert("请求失败！")
+						} else {
+							alert("请求成功！")
+						}
+					}
+				});
 			}
 
 		</script>
+		<div id="detailModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+		</div>
+		<form id="hiddenform2">
+			{% csrf_token %}
+			<input id="id_detailnum" name="detailnum" type="hidden"/>
+		</form>
 	</body>
 </html>
